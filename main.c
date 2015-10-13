@@ -1,95 +1,82 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define MAX_STRLEN 255
-
- void funzioneDiControllo(void* puntatore);
-
-struct s_record{ //elemento della lista-ruoli
-    char ruolo[MAX_STRLEN];
-    struct s_record *next;
-};
-
-struct s_stampa { //struct per salvataggio da file dei nome-ruolo
-    char nome[MAX_STRLEN];
-    char ruolo[MAX_STRLEN];
-};
-//definizioni di due nuove variabili
-typedef struct s_stampa voce;
-typedef struct s_record record;
+#include "library.h"
 
 int main(int argc, char** argv){
     char temporaneo[MAX_STRLEN]; //stringa temporanea
     int flag = 0; //flag che segnala se un elemento è già presente in lista-ruoli
-    FILE *puntatoreTxt; //puntatore a file lista.txt
-    FILE *puntatoreHtml; //puntatore a file index.html
-    record *puntatoreLista, *puntatoreTemp, *puntatoreScorrimento; //puntatori per gestione della lista
-    voce nome_ruolo; //record
+    FILE *p_txt; //puntatore a file lista.txt
+    FILE *p_html; //puntatore a file index.html
+    lista *p_first, *p_temp, *p_scroll; //puntatori per gestione della lista
+    stampa value; //record che va ad essere stampato nel value
     
-    puntatoreTxt = fopen("lista.txt", "r"); //Apertura file .txt
+    p_txt = fopen("lista.txt", "r"); //Apertura file .txt
 
-    puntatoreLista = (record*)malloc(sizeof(record)); //Creazione primo blocco della lista-ruoli e controllo
-    funzioneDiControllo((void*) puntatoreLista);
+    p_first = (lista*)malloc(sizeof(lista)); //Creazione primo blocco della lista-ruoli e controllo
+    if(p_first == NULL)
+        exit(1);
     
-    fscanf(puntatoreTxt, "%[^-]-%[^\n]\n", temporaneo, puntatoreLista->ruolo); //Salvataggio su puntatoreLista->ruolo del ruolo del primo nome-ruolo
-    puntatoreScorrimento = puntatoreLista; //Assegnazione al puntatore adibito allo scorrimento lista dell'indirizzo del primo elemento
+    fscanf(p_txt, "%[^-]-%[^\n]\n", temporaneo, p_first->ruolo); //Salvataggio su puntatoreLista->ruolo del ruolo del primo nome-ruolo
+    p_scroll = p_first; //Assegnazione al puntatore adibito allo scorrimento lista dell'indirizzo del primo elemento
     
-       while(!feof(puntatoreTxt)) { //Condizione : Finchè il file non arriva al termine
-           puntatoreTemp = (record*)malloc(sizeof(record)); //Alloca un elemento temporaneo con controllo
-           funzioneDiControllo((void*) puntatoreLista);
+       while(!feof(p_txt)) { //Condizione : Finchè il file non arriva al termine
+        p_temp = (lista*)malloc(sizeof(lista)); //Alloca un elemento temporaneo con controllo
+        if(p_temp == NULL)
+            exit(2);
            
-           fscanf(puntatoreTxt, "%[^-]-%[^\n]\n", temporaneo, puntatoreTemp->ruolo); //Salvataggio su puntatoreLista->ruolo del ruolo del nome-ruolo in lettura
+           fscanf(p_txt, "%[^-]-%[^\n]\n", temporaneo, p_temp->ruolo); //Salvataggio su puntatoreLista->ruolo del ruolo del nome-ruolo in lettura
            flag = 0;
-           while((puntatoreScorrimento != NULL) && (flag != 1)) { //Condizione : Finché non finisce la lista e il flag di controllo non è vero
-               if(!(strcmp(puntatoreScorrimento->ruolo, puntatoreTemp->ruolo))) //Compara il ruolo dell'elemento puntato dallo scorritore con l'elemento temporaneo
+           while((p_scroll != NULL) && (flag != 1)) { //Condizione : Finché non finisce la lista e il flag di controllo non è vero
+               if(!(strcmp(p_scroll->ruolo, p_temp->ruolo))) //Compara il ruolo dell'elemento puntato dallo scorritore con l'elemento temporaneo
                     flag = 1; //Se sono uguali poni il flag = 1
                     
-               puntatoreScorrimento = puntatoreScorrimento->next; //Assegni al puntatore di scorrimento l'indirizzo del prossimo elemento della lista (in modo da scorrere)
+               p_scroll = p_scroll->next; //Assegni al puntatore di scorrimento l'indirizzo del prossimo elemento della lista (in modo da scorrere)
            }
 
            if(!flag) { //Quando viene comparata tutta la lista con il blocco temporaneo viene controllato il valore di flag
-               puntatoreTemp->next = puntatoreLista; //Se è falso (quindi si tratta di un nuovo ruolo, ancora non immesso nella lista) viene
-               puntatoreLista = puntatoreTemp; // aggiunto il blocco temporaneo nella lista
+               p_temp->next = p_first; //Se è falso (quindi si tratta di un nuovo ruolo, ancora non immesso nella lista) viene
+               p_first = p_temp; // aggiunto il blocco temporaneo nella lista
             }
-           puntatoreScorrimento = puntatoreLista;
+           p_scroll = p_first;
         }
-      fclose(puntatoreTxt); //Chiudo il file .txt
+    fclose(p_txt); //Chiudo il file .txt
       
-      puntatoreHtml = fopen("index.html", "w"); //Apro il file .html e controllo
-      funzioneDiControllo((void*) puntatoreLista);
+    p_html = fopen("index.html", "w"); //Apro il file .html e controllo
+        if(p_html == NULL)
+        exit(3);
       
-      fprintf(puntatoreHtml, "<html>\n" //Genero il file .html tramite funzione fprintf fino al popolamento del <select>
+      fprintf(p_html, "<html>\n" //Genero il file .html tramite funzione fprintf fino al popolamento del <select>
             "<head>\n"
             "</head>\n"
             "<body>\n"
             "<select id=\"lista_ruoli\" onchange=\"funzione()\">\n");
       
-      puntatoreScorrimento = puntatoreLista; //Assegnazione al puntatore adibito allo scorrimento lista dell'indirizzo del primo elemento
-    
-      while(!(puntatoreScorrimento == NULL)) { //Condizione : finchè non finisce la lista (finché i ruoli non sono finiti)
-          puntatoreTxt = fopen("lista.txt", "r"); //Apro il file .txt che andrò a scansionare
-          funzioneDiControllo((void*) puntatoreLista);
+      p_scroll = p_first; //Assegnazione al puntatore adibito allo scorrimento lista dell'indirizzo del primo elemento
+      p_txt = fopen("lista.txt", "r");
+      while(!(p_scroll == NULL)) { //Condizione : finchè non finisce la lista (finché i ruoli non sono finiti)
+           //Apro il file .txt che andrò a scansionare
+          if(p_txt == NULL)
+            exit(4);
           
-          fprintf(puntatoreHtml ,"<option value=\""); //Scrivo fino a value =" sul file .html
+          fprintf(p_html ,"<option value=\""); //Scrivo fino a value =" sul file .html
           
-          while(!(feof(puntatoreTxt))) { //Condizione : finchè non finisce il file scansiono i nome-ruolo
-              fscanf(puntatoreTxt, "%[^-]-%[^\n]\n", nome_ruolo.nome, nome_ruolo.ruolo); 
-              if(!(strcmp(nome_ruolo.ruolo, puntatoreScorrimento->ruolo))) //e in base al ruolo di riferimento
-                  fprintf(puntatoreHtml, "%s; ", nome_ruolo.nome); //stampo i nomi che hanno quel determinato ruolo
+          while(!(feof(p_txt))) { //Condizione : finchè non finisce il file scansiono i nome-ruolo
+              fscanf(p_txt, "%[^-]-%[^\n]\n", value.nome, value.ruolo); 
+              if(!(strcmp(value.ruolo, p_scroll->ruolo))) //e in base al ruolo di riferimento
+                  fprintf(p_html, "%s; ", value.nome); //stampo i nomi che hanno quel determinato ruolo
           } 
-          fclose(puntatoreTxt); //Chiudo il file
-          fprintf(puntatoreHtml, "\"> %s </option>\n", puntatoreScorrimento->ruolo); //Completo l'ultima parte del <option>
-          puntatoreScorrimento = puntatoreScorrimento->next; //e passo al prossimo ruolo
+          rewind(p_txt); //Riavvolgo il file
+          fprintf(p_html, "\"> %s </option>\n", p_scroll->ruolo); //Completo l'ultima parte del <option>
+          p_scroll = p_scroll->next; //e passo al prossimo ruolo
           }
          
-    fprintf(puntatoreHtml, "</select>\n" //Concludo il file .html con i restanti tag e script necessari per il funzionamento della pagina
+    fprintf(p_html, "</select>\n" //Concludo il file .html con i restanti tag e script necessari per il funzionamento della pagina
             "<p id=\"demo\"></p>\n"
             "<script>\n"
             "function funzione() {\n"
             "var x = document.getElementById(\"lista_ruoli\").value;\n"
-            "document.getElementById(\"demo\").innerHTML = \"Ruoli: \" + x\n;"
-            "}\n"
+            "document.getElementById(\"demo\").innerHTML = \"Nomi : \" + x;}\n"
             "</script>\n"
             "</body>\n"
             "</html>");
@@ -97,7 +84,3 @@ int main(int argc, char** argv){
     return (EXIT_SUCCESS);
 }
 
-void funzioneDiControllo(void* puntatore) {
-    if(puntatore == NULL)
-        exit(1);
-}

@@ -1,8 +1,3 @@
-de leonardis-studente
-calosci-studente
-coccia-dirigente scolastico
-fiorucci-professore
-rosati-professore
-giancarloni-bidello
-karasani-bidello
-fabrizzi-personale ata
+morelli-studente
+corbucci-studente
+delicati-professore
