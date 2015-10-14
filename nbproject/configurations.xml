@@ -13,7 +13,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>library.c</itemPath>
+      <itemPath>functions.c</itemPath>
       <itemPath>main.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -38,7 +38,7 @@
       </toolsSet>
       <compileType>
       </compileType>
-      <item path="library.c" ex="false" tool="0" flavor2="0">
+      <item path="functions.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="library.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -65,7 +65,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="library.c" ex="false" tool="0" flavor2="0">
+      <item path="functions.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="library.h" ex="false" tool="3" flavor2="0">
       </item>

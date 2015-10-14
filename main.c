@@ -11,36 +11,10 @@ int main(int argc, char** argv){
     lista *p_first, *p_temp, *p_scroll; //puntatori per gestione della lista
     stampa value; //record che va ad essere stampato nel value
     
-    p_txt = fopen("lista.txt", "r"); //Apertura file .txt
-
-    p_first = (lista*)malloc(sizeof(lista)); //Creazione primo blocco della lista-ruoli e controllo
-    if(p_first == NULL)
-        exit(1);
+   
+    p_first = popolamentoLista();
     
-    fscanf(p_txt, "%[^-]-%[^\n]\n", temporaneo, p_first->ruolo); //Salvataggio su puntatoreLista->ruolo del ruolo del primo nome-ruolo
-    p_scroll = p_first; //Assegnazione al puntatore adibito allo scorrimento lista dell'indirizzo del primo elemento
     
-       while(!feof(p_txt)) { //Condizione : Finchè il file non arriva al termine
-        p_temp = (lista*)malloc(sizeof(lista)); //Alloca un elemento temporaneo con controllo
-        if(p_temp == NULL)
-            exit(2);
-           
-           fscanf(p_txt, "%[^-]-%[^\n]\n", temporaneo, p_temp->ruolo); //Salvataggio su puntatoreLista->ruolo del ruolo del nome-ruolo in lettura
-           flag = 0;
-           while((p_scroll != NULL) && (flag != 1)) { //Condizione : Finché non finisce la lista e il flag di controllo non è vero
-               if(!(strcmp(p_scroll->ruolo, p_temp->ruolo))) //Compara il ruolo dell'elemento puntato dallo scorritore con l'elemento temporaneo
-                    flag = 1; //Se sono uguali poni il flag = 1
-                    
-               p_scroll = p_scroll->next; //Assegni al puntatore di scorrimento l'indirizzo del prossimo elemento della lista (in modo da scorrere)
-           }
-
-           if(!flag) { //Quando viene comparata tutta la lista con il blocco temporaneo viene controllato il valore di flag
-               p_temp->next = p_first; //Se è falso (quindi si tratta di un nuovo ruolo, ancora non immesso nella lista) viene
-               p_first = p_temp; // aggiunto il blocco temporaneo nella lista
-            }
-           p_scroll = p_first;
-        }
-    fclose(p_txt); //Chiudo il file .txt
       
     p_html = fopen("index.html", "w"); //Apro il file .html e controllo
         if(p_html == NULL)

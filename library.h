@@ -18,3 +18,8 @@ struct s_stampa { //struct per salvataggio da file dei nome-ruolo
 //definizioni di due nuove variabili
 typedef struct s_stampa stampa;
 typedef struct s_elemento lista;
+
+//protipi funzioni
+
+lista *aggiuntaTesta(lista *first, lista *temp);
+lista *popolamentoLista();
