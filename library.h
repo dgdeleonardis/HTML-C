@@ -23,3 +23,5 @@ typedef struct s_elemento lista;
 
 lista *aggiuntaTesta(lista *first, lista *temp);
 lista *popolamentoLista();
+FILE *popolamentoSelect(lista *first, FILE *pHtml);
+void svuotaLista(lista *first);

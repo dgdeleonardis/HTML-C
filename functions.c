@@ -6,11 +6,12 @@ lista *aggiuntaTesta(lista *first, lista *temp) {
 }
 
 lista *popolamentoLista() {
-    
+    FILE *pFile;
     lista *scroll, *temp, *first;
     char temporaneo[MAX_STRLEN];
     int flag = 0;
-     pFile = fopen("lista.txt", "r"); //Apertura file .txt
+    
+    pFile = fopen("lista.txt", "r"); //Apertura file .txt
 
     first = (lista*)malloc(sizeof(lista)); //Creazione primo blocco della lista-ruoli e controllo
     if(first == NULL)
@@ -23,20 +24,57 @@ lista *popolamentoLista() {
         if(temp == NULL)
             exit(2);
            
-           fscanf(pFile, "%[^-]-%[^\n]\n", temporaneo, temp->ruolo); //Salvataggio su puntatoreLista->ruolo del ruolo del nome-ruolo in lettura
-           flag = 0;
-           while((scroll != NULL) && (flag != 1)) { //Condizione : Finché non finisce la lista e il flag di controllo non è vero
-               if(!(strcmp(scroll->ruolo, temp->ruolo))) //Compara il ruolo dell'elemento puntato dallo scorritore con l'elemento temporaneo
-                    flag = 1; //Se sono uguali poni il flag = 1
+        fscanf(pFile, "%[^-]-%[^\n]\n", temporaneo, temp->ruolo); //Salvataggio su puntatoreLista->ruolo del ruolo del nome-ruolo in lettura
+        flag = 0;
+        while((scroll != NULL) && (flag != 1)) { //Condizione : Finché non finisce la lista e il flag di controllo non è vero
+            if(!(strcmp(scroll->ruolo, temp->ruolo))) //Compara il ruolo dell'elemento puntato dallo scorritore con l'elemento temporaneo
+                flag = 1; //Se sono uguali poni il flag = 1
                     
-               scroll = scroll->next; //Assegni al puntatore di scorrimento l'indirizzo del prossimo elemento della lista (in modo da scorrere)
-           }
-
-           if(!flag) { //Quando viene comparata tutta la lista con il blocco temporaneo viene controllato il valore di flag
-               first = aggiuntaTesta(first, temp);
-               scroll = first;
-           }
+            scroll = scroll->next; //Assegni al puntatore di scorrimento l'indirizzo del prossimo elemento della lista (in modo da scorrere)
         }
+
+        if(!flag) { //Quando viene comparata tutta la lista con il blocco temporaneo viene controllato il valore di flag
+            first = aggiuntaTesta(first, temp);
+            scroll = first;
+        }
+    }
        
     fclose(pFile); //Chiudo il file .txt
+    return first;
+}
+
+FILE *popolamentoSelect(lista *first, FILE *pHtml) {
+    lista *scroll;
+    FILE *pFile;
+    stampa value; //record che va ad essere stampato nel value
+    
+    scroll = first; //Assegnazione al puntatore adibito allo scorrimento lista dell'indirizzo del primo elemento
+    pFile = fopen("lista.txt", "r");
+    while(!(scroll == NULL)) { //Condizione : finchè non finisce la lista (finché i ruoli non sono finiti)
+        
+        if(pFile == NULL)
+            exit(4);
+          
+        fprintf(pHtml ,"<option value=\""); //Scrivo fino a value =" sul file .html
+          
+        while(!(feof(pFile))) { //Condizione : finchè non finisce il file scansiono i nome-ruolo
+            fscanf(pFile, "%[^-]-%[^\n]\n", value.nome, value.ruolo); 
+            if(!(strcmp(value.ruolo, scroll->ruolo))) //e in base al ruolo di riferimento
+                fprintf(pHtml, "%s; ", value.nome); //stampo i nomi che hanno quel determinato ruolo
+        }
+        
+        rewind(pFile); //Riavvolgo il file
+        fprintf(pHtml, "\"> %s </option>\n", scroll->ruolo); //Completo l'ultima parte del <option>
+        scroll = scroll->next; //e passo al prossimo ruolo
+    }
+    return pHtml;
+}
+
+void svuotaLista(lista *first) {
+    lista *temp;
+    while(!(first == NULL)) {
+        temp = first;
+        first = first->next;
+        free(temp);
+    }
 }
