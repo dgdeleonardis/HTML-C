@@ -1,5 +1,7 @@
-Calosci-Studente
-Morelli-Studente
+Haile-Studente
+Malfagia-Studente
 Coccia-Dirigente Scolastico
 Fiorucci-Professore
 Carloni-Personale ATA
+Rosati-Professore
+Romani-Bidello

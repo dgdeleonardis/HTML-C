@@ -44,27 +44,34 @@ lista *popolamentoLista() {
 }
 
 FILE *popolamentoSelect(lista *first, FILE *pHtml) {
+    int primo = 1;
     lista *scroll;
     FILE *pFile;
     stampa value; //record che va ad essere stampato nel value
     
     scroll = first; //Assegnazione al puntatore adibito allo scorrimento lista dell'indirizzo del primo elemento
     pFile = fopen("lista.txt", "r");
+    if(pFile == NULL)
+        exit(4);
     while(!(scroll == NULL)) { //Condizione : finchè non finisce la lista (finché i ruoli non sono finiti)
         
-        if(pFile == NULL)
-            exit(4);
-          
-        fprintf(pHtml ,"<option value=\""); //Scrivo fino a value =" sul file .html
-          
+        primo = 1;  
+        fprintf(pHtml ,"\t\t<option value='["); //Scrivo fino a value =" sul file .html
+        
         while(!(feof(pFile))) { //Condizione : finchè non finisce il file scansiono i nome-ruolo
-            fscanf(pFile, "%[^-]-%[^\n]\n", value.nome, value.ruolo); 
-            if(!(strcmp(value.ruolo, scroll->ruolo))) //e in base al ruolo di riferimento
-                fprintf(pHtml, "%s; ", value.nome); //stampo i nomi che hanno quel determinato ruolo
+            fscanf(pFile, "%[^-]-%[^\n]\n", value.nome, value.ruolo);
+            if(!(strcmp(value.ruolo, scroll->ruolo))) {
+                if(primo) {
+                    fprintf(pHtml, "\"%s\"", value.nome); //stampo i nomi che hanno quel determinato ruolo
+                    primo = 0;
+                }
+                else
+                    fprintf(pHtml, ",\"%s\"", value.nome); //stampo i nomi che hanno quel determinato ruolo
+            } //e in base al ruolo di riferimento
         }
         
         rewind(pFile); //Riavvolgo il file
-        fprintf(pHtml, "\"> %s </option>\n", scroll->ruolo); //Completo l'ultima parte del <option>
+        fprintf(pHtml, "]\'> %s </option>\n", scroll->ruolo); //Completo l'ultima parte del <option>
         scroll = scroll->next; //e passo al prossimo ruolo
     }
     return pHtml;
