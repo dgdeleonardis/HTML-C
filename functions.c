@@ -33,10 +33,9 @@ lista *popolamentoLista() {
             scroll = scroll->next; //Assegni al puntatore di scorrimento l'indirizzo del prossimo elemento della lista (in modo da scorrere)
         }
 
-        if(!flag) { //Quando viene comparata tutta la lista con il blocco temporaneo viene controllato il valore di flag
+        if(!flag) //Quando viene comparata tutta la lista con il blocco temporaneo viene controllato il valore di flag
             first = aggiuntaTesta(first, temp);
-            scroll = first;
-        }
+        scroll = first;
     }
        
     fclose(pFile); //Chiudo il file .txt

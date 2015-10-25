@@ -5,3 +5,6 @@ Fiorucci-Professore
 Carloni-Personale ATA
 Rosati-Professore
 Romani-Bidello
+Franceschini-Bidello
+Renzi-Studente
+Giovanardi-Studente
